@@ -13,6 +13,16 @@ import (
 func main() {
 	sm := doSimple()
 	readAndWriteDemo(sm)
+	jsonDemo(sm)
+}
+
+func jsonDemo(sm *simplepb.SimpleMessage) {
+	smAsString := toJSON(sm)
+
+	sm2 := &simplepb.SimpleMessage{}
+
+	fromJSON(smAsString, sm2)
+	fmt.Println("Successfully created proto struct", sm2)
 }
 
 func toJSON(pb proto.Message) string {
@@ -22,6 +32,14 @@ func toJSON(pb proto.Message) string {
 		log.Fatalln("Can't convert to JSON", err)
 	}
 	return out
+}
+
+func fromJSON(in string, pb proto.Message) {
+	err := jsonpb.UnmarshalString(in, pb)
+
+	if err != nil {
+		log.Fatalln("Could not unmarshal the JSON into the pb struct", err)
+	}
 }
 
 func readAndWriteDemo(sm *simplepb.SimpleMessage) {
